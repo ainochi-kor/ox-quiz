@@ -27,7 +27,7 @@ const components: { title: string; href: string; description: string }[] = [
   },
   {
     title: "Quiz Start",
-    href: "/docs/primitives/progress",
+    href: "/quiz/start",
     description: "퀴즈를 시작하는 페이지",
   },
 ];

@@ -1,13 +1,10 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { useAuthStore } from "@/hooks/store/useAuthStore";
 import { useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
 
-export function LoginPage() {
+const LoginPage: React.FC = () => {
   const { setUserCredential } = useAuthStore();
   const navigate = useNavigate();
 
@@ -33,4 +30,6 @@ export function LoginPage() {
       </div>
     </section>
   );
-}
+};
+
+export default LoginPage;

@@ -1,12 +1,16 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, Suspense } from "react";
 import { Navigation } from "./Navigation";
 import Content from "./Content";
+import PageLoading from "../loading/PageLoading";
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <main>
+    <main className="flex flex-col flex-1 w-full">
       <Navigation />
-      <Content>{children}</Content>
+
+      <Content>
+        <Suspense fallback={<PageLoading />}>{children}</Suspense>
+      </Content>
     </main>
   );
 };
