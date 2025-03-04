@@ -1,15 +1,15 @@
 import { useAuthStore } from "@/hooks/store/useAuthStore";
-import React from "react";
-import { Navigate, Outlet } from "react-router";
+import React, { PropsWithChildren } from "react";
+import { Navigate } from "react-router";
 
-const AuthGuard: React.FC = () => {
-  const token = useAuthStore((state) => state.token);
+const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
+  const token = useAuthStore((state) => state.userCredential);
 
   if (token === null) {
     return <Navigate to="/login" />;
   }
 
-  return <Outlet />;
+  return <>{children}</>;
 };
 
 export default AuthGuard;

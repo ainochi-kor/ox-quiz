@@ -1,18 +1,20 @@
+import { UserCredential } from "firebase/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthStore {
-  token: string | null;
-  setToken: (token: string) => void;
-  clearToken: () => void;
+  userCredential: UserCredential | null;
+  setUserCredential: (userCredential: UserCredential) => void;
+  clearUserCredential: () => void;
 }
 
 export const useAuthStore = create(
   persist<AuthStore>(
     (set) => ({
-      token: null,
-      setToken: (token: string) => set(() => ({ token })),
-      clearToken: () => set({ token: null }),
+      userCredential: null,
+      setUserCredential: (userCredential: UserCredential) =>
+        set(() => ({ userCredential })),
+      clearUserCredential: () => set({ userCredential: null }),
     }),
     {
       name: "auth-storage",
