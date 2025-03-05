@@ -37,10 +37,8 @@ export function Navigation() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link to="/">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
-            </NavigationMenuLink>
+          <Link to="/" className={navigationMenuTriggerStyle()}>
+            Home
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
