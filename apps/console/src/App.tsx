@@ -1,6 +1,9 @@
 import { Outlet, Route, Routes } from "react-router";
 import "./App.css";
 import { lazy } from "react";
+import { ToastContainer } from "react-toastify";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const AuthGuard = lazy(() => import("./components/router/AuthGuard"));
@@ -10,11 +13,12 @@ const QuizListPage = lazy(() => import("./pages/quiz/QuizListPage"));
 const QuizDetailPage = lazy(() => import("./pages/quiz/QuizDetailPage"));
 const QuizCreatePage = lazy(() => import("./pages/quiz/QuizCreatePage"));
 const QuizStartPage = lazy(() => import("./pages/quiz/QuizStartPage"));
-import { ToastContainer } from "react-toastify";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Routes>
         <Route path="login" element={<LoginPage />} />
         <Route
@@ -36,7 +40,8 @@ function App() {
         </Route>
       </Routes>
       <ToastContainer />
-    </>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
