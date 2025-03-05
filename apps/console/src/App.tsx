@@ -10,6 +10,7 @@ const QuizListPage = lazy(() => import("./pages/quiz/QuizListPage"));
 const QuizDetailPage = lazy(() => import("./pages/quiz/QuizDetailPage"));
 const QuizCreatePage = lazy(() => import("./pages/quiz/QuizCreatePage"));
 const QuizStartPage = lazy(() => import("./pages/quiz/QuizStartPage"));
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+      <ToastContainer />
     </>
   );
 }

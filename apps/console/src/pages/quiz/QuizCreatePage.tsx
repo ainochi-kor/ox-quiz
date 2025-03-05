@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+import { createQuiz, CreateQuizDto } from "@/api/quiz.api";
+import { useNavigate } from "react-router";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 500;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -62,6 +65,8 @@ const formSchema = z.object({
 });
 
 const QuizCreatePage: React.FC = () => {
+  const naviagte = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,12 +88,22 @@ const QuizCreatePage: React.FC = () => {
     name: "quizzes",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const submissionData = {
-      ...values,
-      createdAt: new Date().toISOString(),
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const quiz: CreateQuizDto = {
+      title: values.title,
+      quizzes: values.quizzes.map((quiz) => ({
+        title: quiz.title,
+        description: quiz.description,
+        answer: quiz.answer,
+        answerDescription: quiz.answerDescription,
+        image: quiz.image?.name,
+      })),
     };
-    console.log(submissionData);
+
+    await createQuiz(quiz);
+
+    naviagte("/quiz");
+    toast("퀴즈가 성공적으로 생성되었습니다.");
   }
 
   return (
