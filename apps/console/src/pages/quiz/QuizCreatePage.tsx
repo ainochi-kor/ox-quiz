@@ -24,6 +24,9 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 ];
 
 const formSchema = z.object({
+  title: z.string().nonempty({
+    message: "전체 제목을 비울 수 없습니다.",
+  }),
   quizzes: z.array(
     z.object({
       title: z.string().nonempty({
@@ -62,6 +65,7 @@ const QuizCreatePage: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: "",
       quizzes: [
         {
           title: "",
@@ -80,7 +84,11 @@ const QuizCreatePage: React.FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const submissionData = {
+      ...values,
+      createdAt: new Date().toISOString(),
+    };
+    console.log(submissionData);
   }
 
   return (
@@ -89,6 +97,20 @@ const QuizCreatePage: React.FC = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-4">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>전체 제목</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>전체 제목을 입력해주세요.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           {fields.map((field, index) => (
             <div key={field.id} className="space-y-2">
               <h4 className="text-2xl font-bold">{index + 1} 번째 퀴즈 </h4>
