@@ -16,6 +16,7 @@ export interface CreateQuizDto {
 export interface Quiz extends CreateQuizDto {
   id: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export const getQuizzes = async () =>
