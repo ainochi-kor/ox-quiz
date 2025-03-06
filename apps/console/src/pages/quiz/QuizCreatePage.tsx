@@ -106,6 +106,22 @@ const QuizCreatePage: React.FC = () => {
     toast("퀴즈가 성공적으로 생성되었습니다.");
   }
 
+  const fillFieldsForTesting = () => {
+    fields.forEach((field, index) => {
+      form.setValue(`quizzes.${index}.title`, `Sample Title ${index + 1}`);
+      form.setValue(
+        `quizzes.${index}.description`,
+        `Sample Description ${index + 1}`
+      );
+      form.setValue(`quizzes.${index}.answer`, index % 2 === 0);
+      form.setValue(
+        `quizzes.${index}.answerDescription`,
+        `Sample Answer Description ${index + 1}`
+      );
+      form.setValue(`quizzes.${index}.image`, null);
+    });
+  };
+
   return (
     <>
       <Title title="Quiz Create" description="Create a new quiz" />
@@ -220,6 +236,9 @@ const QuizCreatePage: React.FC = () => {
             </div>
           ))}
           <div className="w-full flex justify-end space-x-2">
+            <Button type="button" onClick={fillFieldsForTesting}>
+              테스트용 퀴즈 추가
+            </Button>
             <Button
               type="button"
               onClick={() =>
