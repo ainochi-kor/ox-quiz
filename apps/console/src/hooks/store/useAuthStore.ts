@@ -1,6 +1,6 @@
 import { UserCredential } from "firebase/auth";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface AuthStore {
   userCredential: UserCredential | null;
@@ -18,6 +18,7 @@ export const useAuthStore = create(
     }),
     {
       name: "auth-storage",
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
