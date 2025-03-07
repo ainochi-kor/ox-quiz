@@ -70,7 +70,7 @@ const QuizCreatePage: React.FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      title: import.meta.env.DEV ? "Sample Quiz" : "",
       quizzes: [
         {
           title: "",

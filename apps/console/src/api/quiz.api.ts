@@ -1,6 +1,16 @@
 import { axiosInstance } from "./axios.config";
 
-export interface QuestionDto {
+export interface Question {
+  title: string;
+  description: string;
+  image?: string;
+}
+
+export interface QuestionWithIndex extends Question {
+  questionIndex: number;
+}
+
+export interface QuestionDto extends Question {
   title: string;
   description: string;
   answer: boolean;
