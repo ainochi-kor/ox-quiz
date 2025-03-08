@@ -3,13 +3,14 @@ import QuizCarousel from "@/components/quiz/QuizCarousel";
 import { Button } from "@/components/ui/button";
 import { useQuizSocket } from "@/hooks/quiz/useQuizSocket";
 import { useAuthStore } from "@/hooks/store/useAuthStore";
-import React, { Suspense, useCallback } from "react";
+import React, { Suspense, useCallback, useRef } from "react";
 import { useParams } from "react-router";
 
 const QuizDetailPage: React.FC = () => {
   const { userCredential } = useAuthStore();
   const { id } = useParams();
   const { gameStarted, players, question, socket, timeLeft } = useQuizSocket();
+  const characterRef = useRef(0);
 
   // 관리자: 게임 시작
   const startGame = useCallback(() => {
@@ -24,20 +25,28 @@ const QuizDetailPage: React.FC = () => {
   }, [id, socket, userCredential?.providerId]);
 
   const joinGame = useCallback(() => {
-    const userId = userCredential?.user.email;
-    console.log("joinGame", { userId });
-    socket.emit("joinGame", { userId });
-  }, [socket, userCredential?.user.email]);
+    if (!userCredential) {
+      throw new Error("로그인 후 참여 가능합니다.");
+    }
+
+    const { email, displayName } = userCredential.user;
+    console.log("joinGame", { id: email });
+    socket.emit("joinGame", {
+      id: email,
+      nickname: displayName,
+      image: characterRef.current,
+    });
+  }, [socket, userCredential]);
 
   // 참가자: 답변 제출
   const submitAnswer = useCallback(
     (answer: "O" | "X") => {
-      const userId = userCredential?.user.email;
-      if (!userId) {
+      const email = userCredential?.user.email;
+      if (!email) {
         alert("게임에 참여한 후 답변을 제출하세요.");
         return;
       }
-      socket.emit("submitAnswer", { userId, position: answer });
+      socket.emit("submitAnswer", { id: email, position: answer });
     },
     [socket, userCredential?.user.email]
   );
