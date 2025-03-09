@@ -12,7 +12,7 @@ export class PreloadScene extends Scene {
   init() {
     this.add.image(0, 0, SPLASH_ASSET_KEY.SPLASH).setOrigin(0);
     const loadingHelper = this.add
-      .image(1280, 0, IMAGE_ASSET_KEY.LOADING_HELPER)
+      .image(1280, 120, IMAGE_ASSET_KEY.LOADING_HELPER)
       .setOrigin(1, 0);
 
     this.#loadingHelperAnimation = this.tweens.add({
@@ -77,11 +77,16 @@ export class PreloadScene extends Scene {
       IMAGE_ASSET_KEY.BUTTON_REFRESH,
       "images/button/button-refresh.png"
     );
+    this.load.image(IMAGE_ASSET_KEY.BUTTON_GOOGLE, "images/button/google.png");
+    this.load.image(
+      IMAGE_ASSET_KEY.FINGER_POINTER,
+      "images/finger-pointer.png"
+    );
 
     this.load.once("complete", () => {
       setTimeout(() => {
         this.#loadingHelperAnimation.destroy();
-        this.scene.start(GAME_SCENE_KEY.LOBBY);
+        this.scene.start(GAME_SCENE_KEY.LOGIN);
       }, 3000);
     });
 
