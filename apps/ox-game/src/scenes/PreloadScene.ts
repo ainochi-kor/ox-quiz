@@ -3,12 +3,25 @@ import { GAME_SCENE_KEY } from "../constants/config";
 import { IMAGE_ASSET_KEY, SPLASH_ASSET_KEY } from "../constants/assets";
 
 export class PreloadScene extends Scene {
+  #loadingHelperAnimation: Phaser.Tweens.Tween;
+
   constructor() {
     super(GAME_SCENE_KEY.PRELOAD);
   }
 
   init() {
     this.add.image(0, 0, SPLASH_ASSET_KEY.SPLASH).setOrigin(0);
+    const loadingHelper = this.add
+      .image(1280, 0, IMAGE_ASSET_KEY.LOADING_HELPER)
+      .setOrigin(1, 0);
+
+    this.#loadingHelperAnimation = this.tweens.add({
+      targets: loadingHelper,
+      x: -loadingHelper.width,
+      ease: "Linear",
+      duration: 15000,
+      repeat: -1,
+    });
   }
 
   preload() {
@@ -26,10 +39,7 @@ export class PreloadScene extends Scene {
     this.load.image(IMAGE_ASSET_KEY.CHARACTER_2, "images/character/02.png");
     this.load.image(IMAGE_ASSET_KEY.CHARACTER_3, "images/character/03.png");
     this.load.image(IMAGE_ASSET_KEY.CHARACTER_4, "images/character/04.png");
-    this.load.image(
-      IMAGE_ASSET_KEY.LOADING_HELPER,
-      "images/helper/loading-helper.png"
-    );
+
     this.load.image(
       IMAGE_ASSET_KEY.QUESTION_HELPER,
       "images/helper/question-helper.png"
@@ -70,6 +80,7 @@ export class PreloadScene extends Scene {
 
     this.load.once("complete", () => {
       setTimeout(() => {
+        this.#loadingHelperAnimation.destroy();
         this.scene.start(GAME_SCENE_KEY.LOBBY);
       }, 3000);
     });

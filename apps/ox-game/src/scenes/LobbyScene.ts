@@ -1,10 +1,10 @@
 import { Scene } from "phaser";
 import { GAME_SCENE_KEY } from "../constants/config";
-import { IMAGE_ASSET_KEY, SPLASH_ASSET_KEY } from "../constants/assets";
+import { IMAGE_ASSET_KEY } from "../constants/assets";
 
 export class LobbyScene extends Scene {
   constructor() {
-    super(GAME_SCENE_KEY.PRELOAD);
+    super(GAME_SCENE_KEY.LOBBY);
   }
 
   init() {

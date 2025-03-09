@@ -1,7 +1,7 @@
 import { BootScene } from "./scenes/BootScene";
-import { Game as MainGame } from "./scenes/Game";
 import { AUTO, Game, Scale, Types } from "phaser";
 import { PreloadScene } from "./scenes/PreloadScene";
+import { LobbyScene } from "./scenes/LobbyScene";
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -15,7 +15,7 @@ const config: Types.Core.GameConfig = {
     mode: Scale.FIT,
     autoCenter: Scale.CENTER_BOTH,
   },
-  scene: [BootScene, PreloadScene],
+  scene: [BootScene, PreloadScene, LobbyScene],
 };
 
 export default new Game(config);
