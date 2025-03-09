@@ -1,18 +1,18 @@
 {
   "name": "ox-game",
-  "description": "A Phaser 3 TypeScript template using Vite.",
-  "version": "1.3.2",
+  "description": "OX Quiz Game!",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/phaserjs/template-vite-ts.git"
+    "url": "git+https://github.com/ainochi-kor/ox-quiz.git"
   },
-  "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+  "author": "Nochi",
   "license": "MIT",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
   "bugs": {
-    "url": "https://github.com/phaserjs/template-vite-ts/issues"
+    "url": "https://github.com/ainochi-kor/ox-quiz/issues"
   },
-  "homepage": "https://github.com/phaserjs/template-vite-ts#readme",
+  "homepage": "https://github.com/ainochi-kor/ox-quiz",
   "scripts": {
     "dev": "node log.js dev & vite --config vite/config.dev.mjs",
     "build": "node log.js build & vite build --config vite/config.prod.mjs",
@@ -22,9 +22,14 @@
   "devDependencies": {
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vite-plugin-remove-console": "^2.2.0"
   },
   "dependencies": {
-    "phaser": "^3.88.2"
+    "axios": "^1.8.1",
+    "firebase": "^11.4.0",
+    "firebase-tools": "^13.32.0",
+    "phaser": "^3.88.2",
+    "socket.io-client": "^4.8.1"
   }
 }
