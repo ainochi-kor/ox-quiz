@@ -20,6 +20,7 @@
     "build-nolog": "vite build --config vite/config.prod.mjs"
   },
   "devDependencies": {
+    "@repo/ox-game-helper": "workspace:*",
     "terser": "^5.31.0",
     "typescript": "^5.4.5",
     "vite": "^5.3.1",

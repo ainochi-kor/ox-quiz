@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { socket } from "@/utils/socket";
+import { Player } from "@repo/ox-game-helper/types/types.ts";
 
 export const useQuizSocket = () => {
   const [gameStarted, setGameStarted] = useState(false);
-  const [players, setPlayers] = useState({});
+  const [players, setPlayers] = useState<Player[]>();
   const [question, setQuestion] = useState<{
     title: string;
     description: string;
