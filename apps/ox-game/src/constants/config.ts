@@ -5,3 +5,7 @@ export const GAME_SCENE_KEY = {
   LOBBY: "Lobby",
   GAME: "Game",
 };
+
+export const FIREBASE = {
+  userCredential: "userCredential",
+};
