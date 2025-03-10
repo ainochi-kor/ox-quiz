@@ -3,6 +3,7 @@ export const GAME_SCENE_KEY = {
   PRELOAD: "Preload",
   LOGIN: "Login",
   LOBBY: "Lobby",
+  READY: "Ready",
   GAME: "Game",
 };
 

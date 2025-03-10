@@ -34,7 +34,7 @@ const QuizDetailPage: React.FC = () => {
     socket.emit("joinGame", {
       id: email,
       nickname: displayName,
-      image: characterRef.current,
+      characterImageId: characterRef.current,
     });
   }, [socket, userCredential]);
 

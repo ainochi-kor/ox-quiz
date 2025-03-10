@@ -29,9 +29,7 @@ export class LobbyScene extends Scene {
 
   async #createQuizRoomList() {
     this.quizRoomList = await getQuizRoomList();
-
     this.#scrollContainer = this.add.container(0, 0);
-
     this.#createdRoomIdList = [];
 
     this.quizRoomList.forEach((room, index) => {
@@ -52,10 +50,8 @@ export class LobbyScene extends Scene {
     background.fillStyle(0xffffff, 1); // White background color
     background.fillRoundedRect(0, 0, 312, 80, 4); // Border radius
 
-    // Add background to the container
     item.add(background);
 
-    // "Join for 1€" Text
     const titleText = this.add
       .text(100, 130, quiz.title, {
         fontSize: "80px",
@@ -64,7 +60,6 @@ export class LobbyScene extends Scene {
       .setName("titleText");
     item.add(titleText);
 
-    // Join Button Image
     const joinButton = this.add
       .image(900, 100, IMAGE_ASSET_KEY.BUTTON_JOIN)
       .setOrigin(0);
@@ -77,17 +72,14 @@ export class LobbyScene extends Scene {
       joinButton.disableInteractive();
     });
 
-    // Scale up on hover
     joinButton.on("pointerover", () => {
       joinButton.setScale(1.05);
     });
 
-    // Scale back down on hover out
     joinButton.on("pointerout", () => {
       joinButton.setScale(1.0);
     });
 
-    // Add the container to the main item container
     item.add(joinButton);
 
     return item;
