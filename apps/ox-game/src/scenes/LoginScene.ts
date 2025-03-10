@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { GAME_SCENE_KEY } from "../constants/config";
+import { FIREBASE, GAME_SCENE_KEY } from "../constants/config";
 import { IMAGE_ASSET_KEY } from "../constants/assets";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../config/firebase";
@@ -16,6 +16,14 @@ export class LoginScene extends Scene {
   }
 
   create() {
+    const userCredential = sessionStorage.getItem(FIREBASE.userCredential);
+
+    if (userCredential) {
+      userStore.setState(JSON.parse(userCredential));
+      this.scene.start(GAME_SCENE_KEY.LOBBY);
+      return;
+    }
+
     const googleButton = this.add.image(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
@@ -30,6 +38,7 @@ export class LoginScene extends Scene {
         .then((data) => {
           userStore.setState(data);
           this.scene.start(GAME_SCENE_KEY.LOBBY);
+          sessionStorage.setItem(FIREBASE.userCredential, JSON.stringify(data));
         })
         .catch((err) => {
           console.error(err);
