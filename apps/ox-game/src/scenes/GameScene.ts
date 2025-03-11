@@ -7,6 +7,7 @@ import { socket } from "../utils/socket";
 import userStore from "../store/user-store";
 import { User, UserCredential } from "firebase/auth";
 import { IMAGE_ASSET_KEY } from "../constants/assets";
+import { ResultBoard } from "../components/ResultBoard";
 
 export class GameScene extends Scene {
   #isGameStarted: boolean = false;
@@ -14,7 +15,10 @@ export class GameScene extends Scene {
   #question: Question;
   #timeLeft: number;
   #user: User;
+
   #userImage: Phaser.GameObjects.Image;
+  #characterImageButtons: Phaser.GameObjects.Image[];
+  #characterImageDesc: Phaser.GameObjects.Text;
 
   constructor() {
     super(GAME_SCENE_KEY.GAME);
@@ -40,7 +44,7 @@ export class GameScene extends Scene {
       .setOrigin(0.5, 0);
 
     this.#registerEvents();
-    this.#createCharacterImageButtons();
+    this.#createCharacterSelector();
 
     this.#emitJoinGame();
   }
@@ -49,14 +53,22 @@ export class GameScene extends Scene {
 
   create() {}
 
-  #createCharacterImageButtons() {
+  #createCharacterSelector() {
     const characterImageIds = [
       IMAGE_ASSET_KEY.CHARACTER_1,
       IMAGE_ASSET_KEY.CHARACTER_2,
       IMAGE_ASSET_KEY.CHARACTER_3,
       IMAGE_ASSET_KEY.CHARACTER_4,
     ];
-    const buttons = characterImageIds.map((characterImageId) => {
+
+    this.#characterImageDesc = this.add
+      .text(this.cameras.main.centerX, 950, "캐릭터를 선택하세요!!!", {
+        fontSize: "80px",
+        color: "#000",
+      })
+      .setOrigin(0.5);
+
+    this.#characterImageButtons = characterImageIds.map((characterImageId) => {
       const button = this.add.image(0, 0, characterImageId);
       button.setInteractive();
       button.on(Phaser.Input.Events.POINTER_UP, () => {
@@ -74,9 +86,15 @@ export class GameScene extends Scene {
       return button;
     });
 
-    buttons.forEach((button, index) => {
+    this.#characterImageButtons.forEach((button, index) => {
       button.setPosition(180 + index * 300, 1650);
     });
+  }
+
+  #destroyCharacterSelector() {
+    this.#characterImageDesc.destroy();
+    this.#characterImageButtons.forEach((button) => button.destroy());
+    this.#characterImageButtons = [];
   }
 
   #setUserImage(characterImageId: string) {
@@ -129,6 +147,7 @@ export class GameScene extends Scene {
     });
 
     socket.on("nextQuestion", (data) => {
+      this.#destroyCharacterSelector();
       console.log("출제된 문제:", data);
       this.#question = data;
     });
@@ -140,7 +159,15 @@ export class GameScene extends Scene {
 
     socket.on("gameOver", (data) => {
       console.log("게임 종료:", data.message);
-      alert(data.message);
+      const resultBoard = new ResultBoard(this);
+      if (data.state === "lose") {
+        resultBoard.createLoser();
+      }
+
+      if (data.state === "win") {
+        resultBoard.createWinner();
+      }
+
       socket.disconnect();
     });
 

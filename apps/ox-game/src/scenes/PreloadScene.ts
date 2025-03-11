@@ -74,6 +74,10 @@ export class PreloadScene extends Scene {
       "images/button/button-join.png"
     );
     this.load.image(
+      IMAGE_ASSET_KEY.BUTTON_LOBBY,
+      "images/button/button-lobby.png"
+    );
+    this.load.image(
       IMAGE_ASSET_KEY.BUTTON_REFRESH,
       "images/button/button-refresh.png"
     );
@@ -84,10 +88,13 @@ export class PreloadScene extends Scene {
     );
 
     this.load.once("complete", () => {
-      setTimeout(() => {
-        this.#loadingHelperAnimation.destroy();
-        this.scene.start(GAME_SCENE_KEY.LOGIN);
-      }, 3000);
+      setTimeout(
+        () => {
+          this.#loadingHelperAnimation.destroy();
+          this.scene.start(GAME_SCENE_KEY.LOGIN);
+        },
+        import.meta.env.DEV ? 0 : 3000
+      );
     });
 
     this.load.start();
