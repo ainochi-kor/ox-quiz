@@ -91,7 +91,9 @@ export class PreloadScene extends Scene {
       setTimeout(
         () => {
           this.#loadingHelperAnimation.destroy();
-          this.scene.start(GAME_SCENE_KEY.LOGIN);
+          import.meta.env.DEV
+            ? this.scene.start(GAME_SCENE_KEY.LOGIN)
+            : this.scene.start(GAME_SCENE_KEY.LOGIN);
         },
         import.meta.env.DEV ? 0 : 3000
       );

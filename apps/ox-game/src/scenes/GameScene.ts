@@ -8,25 +8,27 @@ import userStore from "../store/user-store";
 import { User, UserCredential } from "firebase/auth";
 import { IMAGE_ASSET_KEY } from "../constants/assets";
 import { ResultBoard } from "../components/ResultBoard";
+import { Quiz } from "../components/Quiz";
 
 export class GameScene extends Scene {
-  #isGameStarted: boolean = false;
   #players: Record<string, Player>;
   #question: Question;
   #timeLeft: number;
   #user: User;
+  #waitingIntervalId: number;
+  #quiz: Quiz;
 
   #userImage: Phaser.GameObjects.Image;
   #characterImageButtons: Phaser.GameObjects.Image[];
   #characterImageDesc: Phaser.GameObjects.Text;
+  #waitingHeaderText: Phaser.GameObjects.Text;
 
   constructor() {
     super(GAME_SCENE_KEY.GAME);
   }
 
-  async init({ id }: { id: string }) {
+  async init() {
     const userCredential = userStore.getState();
-    const quizRoom = await getQuizRoom(id);
 
     if (!userCredential) {
       alert("로그인이 필요합니다.");
@@ -36,22 +38,51 @@ export class GameScene extends Scene {
 
     this.#user = userCredential.user;
 
-    this.add
-      .text(this.cameras.main.centerX, 100, quizRoom.title, {
-        fontSize: "80px",
-        color: "#000",
-      })
-      .setOrigin(0.5, 0);
-
+    this.#waitingHeaderForGame();
     this.#registerEvents();
     this.#createCharacterSelector();
 
     this.#emitJoinGame();
   }
 
-  preload() {}
+  preload() {
+    this.#quiz = new Quiz(this);
+  }
 
   create() {}
+
+  #waitingHeaderForGame() {
+    let i = 0;
+    this.#waitingHeaderText = this.add
+      .text(this.cameras.main.centerX, 120, "게임 대기 중", {
+        fontSize: "80px",
+        color: "#000",
+        align: "center",
+        lineSpacing: 20,
+      })
+      .setOrigin(0.5, 0);
+    this.#waitingIntervalId = setInterval(() => {
+      try {
+        this.#waitingHeaderText.setText(
+          `게임 대기 중${Array(i % 4)
+            .fill(".")
+            .join("")}`
+        );
+        i++;
+      } catch (e) {
+        console.error(e);
+        this.#clearWaitingHeader();
+      }
+    }, 400);
+  }
+
+  #clearWaitingHeader() {
+    clearInterval(this.#waitingIntervalId);
+  }
+
+  #destroyWaitingHeader() {
+    this.#waitingHeaderText.destroy();
+  }
 
   #createCharacterSelector() {
     const characterImageIds = [
@@ -115,8 +146,8 @@ export class GameScene extends Scene {
       nickname: string;
       characterImageId: string;
     } = {
-      id: this.#user.uid,
-      nickname: this.#user.displayName ?? "익명",
+      id: this.#user?.uid ?? "anonymous",
+      nickname: this.#user?.displayName ?? "익명",
       characterImageId: IMAGE_ASSET_KEY.CHARACTER_1,
     };
     socket.emit("joinGame", joinGameDto);
@@ -136,9 +167,10 @@ export class GameScene extends Scene {
   }
 
   #registerEvents() {
-    socket.on("waitingForPlayers", (data) => {
-      console.log(`참가자를 모집 중... 남은 시간: ${data.timeLeft}초`);
-      this.#isGameStarted = true;
+    socket.on("waitingForGame", (data) => {
+      this.#clearWaitingHeader();
+      this.#waitingHeaderText.setText(data.message);
+      console.log("게임 시작 대기 중:", data);
     });
 
     socket.on("updatePlayers", (data) => {
@@ -147,14 +179,18 @@ export class GameScene extends Scene {
     });
 
     socket.on("nextQuestion", (data) => {
+      this.#destroyWaitingHeader();
       this.#destroyCharacterSelector();
+      this.#quiz.destroyQuestion();
+
+      this.#quiz.createQuestion(data);
       console.log("출제된 문제:", data);
       this.#question = data;
     });
 
-    socket.on("countdown", (data) => {
-      console.log(`남은 시간: ${data.timeLeft}초`);
-      this.#timeLeft = data.timeLeft;
+    socket.on("currentQuestion", (data) => {
+      this.#quiz.createQuestion(data);
+      // this.#timeLeft = data.timeLeft;
     });
 
     socket.on("gameOver", (data) => {
