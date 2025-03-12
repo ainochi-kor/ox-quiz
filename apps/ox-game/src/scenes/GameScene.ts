@@ -16,6 +16,7 @@ import { OXButton } from "../components/OXButton";
 import { CharacterSelector } from "../components/CharacterSelector";
 import { ParticipantsText } from "../components/ParticipantsText";
 import { GameHeader } from "../components/GameHeader";
+import { PlayersInGame } from "../components/PlayersInGame";
 
 export class GameScene extends Scene {
   #players: Record<string, Player>;
@@ -31,6 +32,7 @@ export class GameScene extends Scene {
   #characterSelector: CharacterSelector;
   #participantsText: ParticipantsText;
   #gameHeader: GameHeader;
+  #playersInGame: PlayersInGame;
 
   constructor() {
     super(GAME_SCENE_KEY.GAME);
@@ -57,6 +59,7 @@ export class GameScene extends Scene {
     this.#characterSelector = new CharacterSelector(this, this.#user.uid);
     this.#participantsText = new ParticipantsText(this);
     this.#gameHeader = new GameHeader(this);
+    this.#playersInGame = new PlayersInGame(this);
   }
 
   create() {
@@ -128,6 +131,8 @@ export class GameScene extends Scene {
       this.#characterSelector.destroyCharacterSelector();
       this.#gameHeader.deleteGameHeaderText();
       this.#participantsText.deleteParticipantsText();
+      this.#playersInGame.deletePlayersInGame();
+      this.#playersInGame.createPlayersInGame(this.#players);
 
       this.#quiz.createQuestion(data);
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
@@ -152,6 +157,7 @@ export class GameScene extends Scene {
 
     socket.on(SOCKET_RESPONSE_KEY.WAITING_QUIZ_NEXT, () => {
       this.#gameHeader.createGameHeaderText("다음 문제 대기 중");
+      this.#playersInGame.deletePlayersInGame();
     });
 
     socket.on(SOCKET_RESPONSE_KEY.GAME_OVER, (data) => {
@@ -172,11 +178,13 @@ export class GameScene extends Scene {
       console.error("오류 발생:", data.message);
       alert(data.message);
       socket.disconnect();
+      this.scene.start(GAME_SCENE_KEY.LOBBY);
     });
 
-    socket.on(SOCKET_RESPONSE_KEY.MOVE_USER, (data) => {
+    socket.on(SOCKET_RESPONSE_KEY.MOVE_USER, (data: Record<string, Player>) => {
       console.log("moveUser", data);
-      Object.assign(this.#players, data);
+      this.#players = Object.assign({}, this.#players, data);
+      this.#playersInGame.movePlayer(Object.values(data)[0]);
     });
 
     socket.on(SOCKET_RESPONSE_KEY.CHANGE_IMAGE, (data) => {

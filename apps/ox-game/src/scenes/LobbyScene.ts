@@ -3,6 +3,7 @@ import { GAME_SCENE_KEY } from "../constants/config";
 import { IMAGE_ASSET_KEY } from "../constants/assets";
 import userStore from "../store/user-store";
 import { QuizRoom } from "@repo/ox-game-helper/types/types.js";
+import { socket } from "../utils/socket";
 
 export class LobbyScene extends Scene {
   quizRoomList: QuizRoom[] = [];
@@ -53,6 +54,9 @@ export class LobbyScene extends Scene {
     joinButton.on("pointerdown", () => {
       this.scene.start(GAME_SCENE_KEY.GAME);
       joinButton.disableInteractive();
+      if (!socket.active) {
+        socket.connect();
+      }
     });
 
     joinButton.on("pointerover", () => {

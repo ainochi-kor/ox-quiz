@@ -2,7 +2,7 @@ export interface Player {
   id: string;
   position: boolean;
   nickname?: string;
-  characterImageId?: string;
+  characterImageId: string;
 }
 
 export interface Question {
