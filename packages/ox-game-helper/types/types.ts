@@ -1,6 +1,6 @@
 export interface Player {
   id: string;
-  position: "O" | "X";
+  position: boolean;
   nickname?: string;
   characterImageId?: string;
 }

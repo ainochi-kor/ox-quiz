@@ -32,7 +32,7 @@ export class PreloadScene extends Scene {
       "images/background/background.png"
     );
     this.load.image(
-      IMAGE_ASSET_KEY.BACKGROUND,
+      IMAGE_ASSET_KEY.BACKGROUND_INGAME,
       "images/background/ingame-background.png"
     );
     this.load.image(IMAGE_ASSET_KEY.CHARACTER_1, "images/character/01.png");

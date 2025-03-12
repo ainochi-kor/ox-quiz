@@ -2,6 +2,28 @@ import { io, Socket } from "socket.io-client";
 
 // WebSocket 서버 URL을 환경 변수에서 가져오기
 const SERVER_URL = import.meta.env.VITE_API_URL;
+export const SOCKET_RESPONSE_KEY = Object.freeze({
+  WAITING_FOR_GAME: "waitingForGame",
+  UPDATE_PLAYERS: "updatePlayers",
+  NEXT_QUESTION: "nextQuestion",
+  CURRENT_QUESTION: "currentQuestion",
+  WAITING_QUIZ_RESULT: "waitingQuizResult",
+  COUNTDOWN: "countdown",
+  GAME_OVER: "gameOver",
+  ERROR: "error",
+  MOVE_USER: "moveUser",
+  CHANGE_IMAGE: "changeImage",
+});
+
+export const SOCKET_REQUEST_KEY = Object.freeze({
+  JOIN_GAME: "joinGame",
+  LEAVE_ROOM: "leaveRoom",
+  ANSWER: "answer",
+  READY: "ready",
+  START_GAME: "startGame",
+  CHANGE_IMAGE: "changeImage",
+  SUBMIT_ANSWER: "submitAnswer",
+});
 
 // ✅ 싱글톤 WebSocket 인스턴스
 export const socket: Socket = io(SERVER_URL, {
@@ -15,11 +37,25 @@ socket.on("connect", () => {
 });
 
 export const deleteSocketEvents = () => {
-  socket.off("waitingForPlayers");
-  socket.off("updatePlayers");
-  socket.off("nextQuestion");
-  socket.off("countdown");
-  socket.off("gameOver");
-  socket.off("error");
-  socket.off("moveUser");
+  socket.off(SOCKET_RESPONSE_KEY.WAITING_FOR_GAME);
+  socket.off(SOCKET_RESPONSE_KEY.UPDATE_PLAYERS);
+  socket.off(SOCKET_RESPONSE_KEY.NEXT_QUESTION);
+  socket.off(SOCKET_RESPONSE_KEY.CURRENT_QUESTION);
+  socket.off(SOCKET_RESPONSE_KEY.WAITING_QUIZ_RESULT);
+  socket.off(SOCKET_RESPONSE_KEY.COUNTDOWN);
+  socket.off(SOCKET_RESPONSE_KEY.GAME_OVER);
+  socket.off(SOCKET_RESPONSE_KEY.ERROR);
+  socket.off(SOCKET_RESPONSE_KEY.MOVE_USER);
+  socket.off(SOCKET_RESPONSE_KEY.CHANGE_IMAGE);
+};
+
+export type JOIN_GAME_DTO = {
+  id: string;
+  nickname: string;
+  characterImageId: string;
+};
+
+export type CHNAGE_IMAGE_DTO = {
+  id: string;
+  characterImageId: string;
 };
