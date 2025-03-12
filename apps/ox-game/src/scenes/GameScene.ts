@@ -14,6 +14,7 @@ import { ResultBoard } from "../components/ResultBoard";
 import { Quiz } from "../components/Quiz";
 import { OXButton } from "../components/OXButton";
 import { CharacterSelector } from "../components/CharacterSelector";
+import { ParticipantsText } from "../components/ParticipantsText";
 
 export class GameScene extends Scene {
   #players: Record<string, Player>;
@@ -24,11 +25,11 @@ export class GameScene extends Scene {
 
   #background: Phaser.GameObjects.Image;
   #waitingHeaderText: Phaser.GameObjects.Text;
-  #participantsText: Phaser.GameObjects.Text;
 
   #quiz: Quiz;
   #oxButton: OXButton;
   #characterSelector: CharacterSelector;
+  #participantsText: ParticipantsText;
 
   constructor() {
     super(GAME_SCENE_KEY.GAME);
@@ -53,27 +54,15 @@ export class GameScene extends Scene {
     this.#quiz = new Quiz(this);
     this.#oxButton = new OXButton(this, this.#emitAnswer);
     this.#characterSelector = new CharacterSelector(this, this.#user.uid);
+    this.#participantsText = new ParticipantsText(this);
   }
 
   create() {
     this.#waitingHeaderForGame();
     this.#registerEvents();
     this.#emitJoinGame();
-    this.#createParticipantsText();
+    this.#participantsText.createParticipantsText();
     this.#characterSelector.createCharacterSelector();
-  }
-
-  #createParticipantsText() {
-    this.#participantsText = this.add
-      .text(this.cameras.main.centerX, 250, "현재 참가자: -명", {
-        fontSize: "60px",
-        color: "#000",
-      })
-      .setOrigin(0.5, 0);
-  }
-
-  #deleteParticipantsText() {
-    this.#participantsText?.destroy();
   }
 
   #waitingHeaderForGame() {
@@ -138,9 +127,7 @@ export class GameScene extends Scene {
       (data: Record<string, Player>) => {
         console.log("현재 참가자 목록:", data);
         this.#players = data;
-        this.#participantsText.setText(
-          `현재 참가자: ${Object.keys(data).length}명`
-        );
+        this.#participantsText.updateParticipantsText(Object.keys(data).length);
       }
     );
 
@@ -148,7 +135,7 @@ export class GameScene extends Scene {
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
       this.#characterSelector.destroyCharacterSelector();
       this.#destroyWaitingHeader();
-      this.#deleteParticipantsText();
+      this.#participantsText.deleteParticipantsText();
 
       this.#quiz.createQuestion(data);
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
@@ -159,7 +146,7 @@ export class GameScene extends Scene {
 
     socket.on(SOCKET_RESPONSE_KEY.CURRENT_QUESTION, (data) => {
       this.#quiz.createQuestion(data);
-      this.#deleteParticipantsText();
+      this.#participantsText.deleteParticipantsText();
       this.#oxButton.createOXButton(this.#players[this.#user.uid].position);
       // this.#timeLeft = data.timeLeft;
     });
@@ -167,7 +154,7 @@ export class GameScene extends Scene {
     socket.on(SOCKET_RESPONSE_KEY.WAITING_QUIZ_RESULT, () => {
       console.log("퀴즈 결과 대기 중");
       this.#oxButton.destroyOXButton();
-      this.#deleteParticipantsText();
+      this.#participantsText.deleteParticipantsText();
       this.#quiz.destroyQuestion();
     });
 
