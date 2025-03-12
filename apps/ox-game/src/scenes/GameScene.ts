@@ -21,12 +21,12 @@ export class GameScene extends Scene {
   #timeLeft: number;
   #user: User;
   #waitingIntervalId: number;
-  #quiz: Quiz;
 
   #background: Phaser.GameObjects.Image;
-
   #waitingHeaderText: Phaser.GameObjects.Text;
+  #participantsText: Phaser.GameObjects.Text;
 
+  #quiz: Quiz;
   #oxButton: OXButton;
   #characterSelector: CharacterSelector;
 
@@ -59,7 +59,21 @@ export class GameScene extends Scene {
     this.#waitingHeaderForGame();
     this.#registerEvents();
     this.#emitJoinGame();
+    this.#createParticipantsText();
     this.#characterSelector.createCharacterSelector();
+  }
+
+  #createParticipantsText() {
+    this.#participantsText = this.add
+      .text(this.cameras.main.centerX, 250, "현재 참가자: -명", {
+        fontSize: "60px",
+        color: "#000",
+      })
+      .setOrigin(0.5, 0);
+  }
+
+  #deleteParticipantsText() {
+    this.#participantsText?.destroy();
   }
 
   #waitingHeaderForGame() {
@@ -124,6 +138,9 @@ export class GameScene extends Scene {
       (data: Record<string, Player>) => {
         console.log("현재 참가자 목록:", data);
         this.#players = data;
+        this.#participantsText.setText(
+          `현재 참가자: ${Object.keys(data).length}명`
+        );
       }
     );
 
@@ -131,6 +148,7 @@ export class GameScene extends Scene {
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
       this.#characterSelector.destroyCharacterSelector();
       this.#destroyWaitingHeader();
+      this.#deleteParticipantsText();
 
       this.#quiz.createQuestion(data);
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
@@ -141,13 +159,15 @@ export class GameScene extends Scene {
 
     socket.on(SOCKET_RESPONSE_KEY.CURRENT_QUESTION, (data) => {
       this.#quiz.createQuestion(data);
+      this.#deleteParticipantsText();
       this.#oxButton.createOXButton(this.#players[this.#user.uid].position);
       // this.#timeLeft = data.timeLeft;
     });
 
     socket.on(SOCKET_RESPONSE_KEY.WAITING_QUIZ_RESULT, () => {
       console.log("퀴즈 결과 대기 중");
-      this.#oxButton.destroy();
+      this.#oxButton.destroyOXButton();
+      this.#deleteParticipantsText();
       this.#quiz.destroyQuestion();
     });
 

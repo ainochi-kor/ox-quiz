@@ -55,7 +55,7 @@ export class OXButton {
     });
   }
 
-  destroy() {
+  destroyOXButton() {
     this.#ButtonO?.destroy();
     this.#ButtonX?.destroy();
 
