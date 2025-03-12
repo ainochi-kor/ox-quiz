@@ -119,7 +119,7 @@ export class GameScene extends Scene {
     socket.on(SOCKET_RESPONSE_KEY.WAITING_FOR_GAME, (data) => {
       this.#clearWaitingHeader();
       this.#waitingHeaderText.setText(data.message);
-      console.log("게임 시작 대기 중:", data);
+      this.#participantsText.deleteParticipantsText();
     });
 
     socket.on(

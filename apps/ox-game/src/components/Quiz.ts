@@ -29,31 +29,37 @@ export class Quiz {
       return;
     }
 
-    this.#titleText = this.#scene.add
-      .text(
-        this.#scene.cameras.main.centerX,
-        250,
-        `${data.question}${data.question}${data.question}`,
-        {
-          fontSize: "80px",
-          color: "#000",
-          fixedWidth: LAYOUT_SIZE.width,
-        }
-      )
-      .setOrigin(0.5, 0);
-
-    this.#descriptionText = this.#scene.add
-      .text(this.#scene.cameras.main.centerX, 350, data.description, {
-        fontSize: "60px",
-        color: "#000",
-      })
-      .setOrigin(0.5, 0);
-
     this.#timeLeftText = this.#scene.add
       .text(this.#scene.cameras.main.centerX, 100, `${data?.timeLeft ?? "-"}`, {
         fontSize: "120px",
         color: "#000",
+        backgroundColor: "#fff",
       })
+      .setOrigin(0.5, 0);
+
+    this.#titleText = this.#scene.add
+      .text(this.#scene.cameras.main.centerX, 250, `${data.question}`, {
+        fontSize: "80px",
+        color: "#000",
+        fixedWidth: LAYOUT_SIZE.width,
+        align: "center",
+        backgroundColor: "#fff",
+      })
+      .setOrigin(0.5, 0);
+
+    const titleBounds = this.#titleText.getBounds();
+
+    this.#descriptionText = this.#scene.add
+      .text(
+        this.#scene.cameras.main.centerX,
+        titleBounds.y + titleBounds.height + 100,
+        data.description,
+        {
+          fontSize: "60px",
+          color: "#000",
+          backgroundColor: "#fff",
+        }
+      )
       .setOrigin(0.5, 0);
 
     this.#isCreated = true;

@@ -57,6 +57,7 @@ export class CharacterSelector {
     this.#characterImageDesc.destroy();
     this.#characterImageButtons.forEach((button) => button.destroy());
     this.#characterImageButtons = [];
+    this.#previewUserImage?.destroy();
   }
 
   #emitChangeImage(characterImageId: string) {
