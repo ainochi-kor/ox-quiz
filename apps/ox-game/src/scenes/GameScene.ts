@@ -15,6 +15,7 @@ import { Quiz } from "../components/Quiz";
 import { OXButton } from "../components/OXButton";
 import { CharacterSelector } from "../components/CharacterSelector";
 import { ParticipantsText } from "../components/ParticipantsText";
+import { GameHeader } from "../components/GameHeader";
 
 export class GameScene extends Scene {
   #players: Record<string, Player>;
@@ -24,12 +25,12 @@ export class GameScene extends Scene {
   #waitingIntervalId: number;
 
   #background: Phaser.GameObjects.Image;
-  #waitingHeaderText: Phaser.GameObjects.Text;
 
   #quiz: Quiz;
   #oxButton: OXButton;
   #characterSelector: CharacterSelector;
   #participantsText: ParticipantsText;
+  #gameHeader: GameHeader;
 
   constructor() {
     super(GAME_SCENE_KEY.GAME);
@@ -55,6 +56,7 @@ export class GameScene extends Scene {
     this.#oxButton = new OXButton(this, this.#emitAnswer);
     this.#characterSelector = new CharacterSelector(this, this.#user.uid);
     this.#participantsText = new ParticipantsText(this);
+    this.#gameHeader = new GameHeader(this);
   }
 
   create() {
@@ -67,17 +69,11 @@ export class GameScene extends Scene {
 
   #waitingHeaderForGame() {
     let i = 0;
-    this.#waitingHeaderText = this.add
-      .text(this.cameras.main.centerX, 120, "게임 대기 중", {
-        fontSize: "80px",
-        color: "#000",
-        align: "center",
-        lineSpacing: 20,
-      })
-      .setOrigin(0.5, 0);
+    this.#gameHeader.createGameHeaderText("게임 대기 중");
+
     this.#waitingIntervalId = setInterval(() => {
       try {
-        this.#waitingHeaderText.setText(
+        this.#gameHeader.updateGameHeaderText(
           `게임 대기 중${Array(i % 4)
             .fill(".")
             .join("")}`
@@ -92,10 +88,6 @@ export class GameScene extends Scene {
 
   #clearWaitingHeader() {
     clearInterval(this.#waitingIntervalId);
-  }
-
-  #destroyWaitingHeader() {
-    this.#waitingHeaderText.destroy();
   }
 
   #emitAnswer(answer: boolean) {
@@ -118,7 +110,7 @@ export class GameScene extends Scene {
   #registerEvents() {
     socket.on(SOCKET_RESPONSE_KEY.WAITING_FOR_GAME, (data) => {
       this.#clearWaitingHeader();
-      this.#waitingHeaderText.setText(data.message);
+      this.#gameHeader.createGameHeaderText(data.message);
       this.#participantsText.deleteParticipantsText();
     });
 
@@ -134,7 +126,7 @@ export class GameScene extends Scene {
     socket.on(SOCKET_RESPONSE_KEY.NEXT_QUESTION, (data) => {
       this.#background.setTexture(IMAGE_ASSET_KEY.BACKGROUND_INGAME);
       this.#characterSelector.destroyCharacterSelector();
-      this.#destroyWaitingHeader();
+      this.#gameHeader.deleteGameHeaderText();
       this.#participantsText.deleteParticipantsText();
 
       this.#quiz.createQuestion(data);
@@ -156,6 +148,10 @@ export class GameScene extends Scene {
       this.#oxButton.destroyOXButton();
       this.#participantsText.deleteParticipantsText();
       this.#quiz.destroyQuestion();
+    });
+
+    socket.on(SOCKET_RESPONSE_KEY.WAITING_QUIZ_NEXT, () => {
+      this.#gameHeader.createGameHeaderText("다음 문제 대기 중");
     });
 
     socket.on(SOCKET_RESPONSE_KEY.GAME_OVER, (data) => {

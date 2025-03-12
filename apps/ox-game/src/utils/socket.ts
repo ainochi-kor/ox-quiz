@@ -8,6 +8,7 @@ export const SOCKET_RESPONSE_KEY = Object.freeze({
   NEXT_QUESTION: "nextQuestion",
   CURRENT_QUESTION: "currentQuestion",
   WAITING_QUIZ_RESULT: "waitingQuizResult",
+  WAITING_QUIZ_NEXT: "waitingQuizNext",
   COUNTDOWN: "countdown",
   GAME_OVER: "gameOver",
   ERROR: "error",
@@ -36,18 +37,10 @@ socket.on("connect", () => {
   console.log("WebSocket 연결 성공:", socket.id);
 });
 
-export const deleteSocketEvents = () => {
-  socket.off(SOCKET_RESPONSE_KEY.WAITING_FOR_GAME);
-  socket.off(SOCKET_RESPONSE_KEY.UPDATE_PLAYERS);
-  socket.off(SOCKET_RESPONSE_KEY.NEXT_QUESTION);
-  socket.off(SOCKET_RESPONSE_KEY.CURRENT_QUESTION);
-  socket.off(SOCKET_RESPONSE_KEY.WAITING_QUIZ_RESULT);
-  socket.off(SOCKET_RESPONSE_KEY.COUNTDOWN);
-  socket.off(SOCKET_RESPONSE_KEY.GAME_OVER);
-  socket.off(SOCKET_RESPONSE_KEY.ERROR);
-  socket.off(SOCKET_RESPONSE_KEY.MOVE_USER);
-  socket.off(SOCKET_RESPONSE_KEY.CHANGE_IMAGE);
-};
+export const deleteSocketEvents = () =>
+  Object.values(SOCKET_REQUEST_KEY).forEach((key) => {
+    socket.off(key);
+  });
 
 export type JOIN_GAME_DTO = {
   id: string;
