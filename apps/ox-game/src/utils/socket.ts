@@ -31,6 +31,7 @@ export const socket: Socket = io(SERVER_URL, {
   transports: ["websocket"], // WebSocket만 사용 (HTTP 폴백 방지)
   reconnectionAttempts: 5, // 재연결 시도 횟수
   reconnectionDelay: 1000, // 재연결 시도 간격 (1초)
+  withCredentials: true,
 });
 
 socket.on("connect", () => {

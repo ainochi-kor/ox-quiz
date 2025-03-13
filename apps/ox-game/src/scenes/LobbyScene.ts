@@ -52,11 +52,11 @@ export class LobbyScene extends Scene {
     joinButton.setInteractive();
 
     joinButton.on("pointerdown", () => {
-      this.scene.start(GAME_SCENE_KEY.GAME);
       joinButton.disableInteractive();
       if (!socket.active) {
         socket.connect();
       }
+      this.scene.start(GAME_SCENE_KEY.GAME);
     });
 
     joinButton.on("pointerover", () => {
