@@ -1,6 +1,6 @@
-import { Quiz } from "@/api/quiz.api";
 import Title from "@/components/layout/Title";
 import QuizListTable from "@/components/quiz/QuizListTable";
+import { Quiz } from "@repo/ox-game-helper/types/types.js";
 import React, { Suspense, useCallback } from "react";
 import { useNavigate } from "react-router";
 

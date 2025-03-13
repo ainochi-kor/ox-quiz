@@ -1,4 +1,4 @@
-import { getQuizzes, Quiz } from "@/api/quiz.api";
+import { getQuizzes } from "@/api/quiz.api";
 import quizListColumns from "@/components/quiz/table/quizlist.column";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Quiz } from "@repo/ox-game-helper/types/types.js";
 
 interface QuizListTableProps {
   handleRowClick: (quiz: Quiz) => void;

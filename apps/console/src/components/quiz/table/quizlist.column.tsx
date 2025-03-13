@@ -1,4 +1,4 @@
-import { Quiz } from "@/api/quiz.api";
+import { Quiz } from "@repo/ox-game-helper/types/types.js";
 import { createColumnHelper } from "@tanstack/react-table";
 import dayjs from "dayjs";
 

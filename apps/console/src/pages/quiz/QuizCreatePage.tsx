@@ -15,8 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
-import { createQuiz, CreateQuizDto } from "@/api/quiz.api";
+import { createQuiz } from "@/api/quiz.api";
 import { useNavigate } from "react-router";
+import { CreateQuizDto } from "@repo/ox-game-helper/types/types.js";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 500;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -107,7 +108,7 @@ const QuizCreatePage: React.FC = () => {
   }
 
   const fillFieldsForTesting = () => {
-    fields.forEach((field, index) => {
+    fields.forEach((_, index) => {
       form.setValue(`quizzes.${index}.title`, `Sample Title ${index + 1}`);
       form.setValue(
         `quizzes.${index}.description`,
