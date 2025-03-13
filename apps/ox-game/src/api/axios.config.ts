@@ -5,6 +5,7 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
+  config.headers.set("ngrok-skip-browser-warning", 69420);
   return config;
 });
 
