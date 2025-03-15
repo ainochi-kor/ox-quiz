@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { createQuiz } from "@/api/quiz.api";
 import { useNavigate } from "react-router";
 import { CreateQuizDto } from "@repo/ox-game-helper/types/types.js";
+import { examQuestions } from "@/data/quiz";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 500;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -108,19 +109,38 @@ const QuizCreatePage: React.FC = () => {
   }
 
   const fillFieldsForTesting = () => {
-    fields.forEach((_, index) => {
-      form.setValue(`quizzes.${index}.title`, `Sample Title ${index + 1}`);
-      form.setValue(
-        `quizzes.${index}.description`,
-        `Sample Description ${index + 1}`
-      );
-      form.setValue(`quizzes.${index}.answer`, index % 2 === 0);
-      form.setValue(
-        `quizzes.${index}.answerDescription`,
-        `Sample Answer Description ${index + 1}`
-      );
-      form.setValue(`quizzes.${index}.image`, null);
+    // 제목 설정
+    form.setValue("title", examQuestions.title);
+
+    examQuestions.quizzes.forEach((quiz, index) => {
+      if (index >= fields.length) {
+        // 필요한 경우 새로운 필드 추가
+        append({
+          title: quiz.title,
+          description: quiz.description,
+          answer: quiz.answer,
+          answerDescription: quiz.answerDescription,
+          image: null,
+        });
+      } else {
+        // 기존 필드 업데이트
+        form.setValue(`quizzes.${index}.title`, quiz.title);
+        form.setValue(`quizzes.${index}.description`, quiz.description);
+        form.setValue(`quizzes.${index}.answer`, quiz.answer);
+        form.setValue(
+          `quizzes.${index}.answerDescription`,
+          quiz.answerDescription
+        );
+        form.setValue(`quizzes.${index}.image`, null);
+      }
     });
+
+    // 만약 `fields`가 `examQuestions.quizzes.length`보다 많다면 초과된 필드 제거
+    if (fields.length > examQuestions.quizzes.length) {
+      for (let i = fields.length - 1; i >= examQuestions.quizzes.length; i--) {
+        remove(i);
+      }
+    }
   };
 
   return (
